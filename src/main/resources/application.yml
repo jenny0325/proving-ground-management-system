@@ -11,11 +11,12 @@ spring:
   thymeleaf:
     prefix: classpath:/static/templates/
     cache: false
+
   # H2
   h2:
     console:
       enabled: true
-      path: /h2-console
+
   # DataBase info
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
