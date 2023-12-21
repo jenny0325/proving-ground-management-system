@@ -1,0 +1,103 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.apache.commons:commons-lang3'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // jwt 관련 의존성
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jacoco {
+    // JaCoCo 버전
+    toolVersion = '0.8.11'
+}
+
+test {
+    finalizedBy jacocoTestReport // 테스트 종료후 항상 리포트 생성
+}
+
+jacocoTestReport {
+    dependsOn test // 리포트 생성을 위해서는 test가 먼저 완료되어야 함
+
+    reports {
+        xml.required = true
+        csv.required = true
+        html.required = true
+
+        xml.destination file("${buildDir}/jacoco/index.xml")
+        csv.destination file("${buildDir}/jacoco/index.csv")
+        html.destination file("${buildDir}/jacoco/index.html")
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true; // true 로 설정하면 포함된 작업에 대한 데이터가 수집된다.
+            element = 'CLASS' // 룰을 체크할 단위는 클래스 단위
+
+            excludes = [
+                    'com.hmg.pmg.**.entity.*',
+                    'com.hmg.pmg.**.dto.*',
+                    'com.hmg.pmg.common.*',
+                    'com.hmg.pmg.auth.*',
+                    'com.hmg.pmg.PmgApplication',
+                    'com.hmg.pmg.common.exception.*',
+                    'com.hmg.pmg.common.response.*',
+                    'com.hmg.pmg.config.security.*',
+                    'com.hmg.pmg.config.jwt.*',
+                    'com.hmg.pmg.refresh_token.*',
+                    'com.hmg.pmg.**.controller.*'
+            ]
+
+            limit { // rule 에 대한 제한을 설정.
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+        }
+    }
+}
