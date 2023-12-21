@@ -1,0 +1,3 @@
+spring:
+  jwt:
+    secret-key: Zi1sYWItdGlja2V0aW5nLXByb2plY3Qtc3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNlY3JldC1rZXktZi1sYWItdGlja2V0aW5nLXByb2plY3Qtc3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNlY3JDKIETNWkej
